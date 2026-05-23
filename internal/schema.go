@@ -243,6 +243,20 @@ func ValidateRPC(tool string, nodeIDs []string, params map[string]interface{}) s
 			return msg
 		}
 
+	case "create_text_container":
+		if text, _ := params["text"].(string); text == "" {
+			return "text is required"
+		}
+		if w, ok := params["width"].(float64); ok && w <= 0 {
+			return "width must be positive"
+		}
+		if h, ok := params["height"].(float64); ok && h <= 0 {
+			return "height must be positive"
+		}
+		if pid, ok := params["parentId"].(string); ok && pid != "" && !ValidNodeID(pid) {
+			return fmt.Sprintf("parentId must use colon format e.g. 4029:12345, got: %s", pid)
+		}
+
 	case "set_auto_layout":
 		if len(nodeIDs) == 0 || nodeIDs[0] == "" {
 			return "nodeId is required"

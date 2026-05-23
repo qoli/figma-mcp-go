@@ -35,6 +35,35 @@ func registerWriteCreateTools(s *server.MCPServer, node *Node) {
 		return renderResponse(resp, err)
 	})
 
+	s.AddTool(mcp.NewTool("create_text_container",
+		mcp.WithDescription("Create a text-backed UI container (button, chip, badge, label) as one auto-layout frame with a text child. Use this instead of create_rectangle + create_text + group_nodes when text must stay centered with symmetric padding."),
+		mcp.WithString("text",
+			mcp.Required(),
+			mcp.Description("Text content for the child text node"),
+		),
+		mcp.WithNumber("x", mcp.Description("Container X position in pixels (default 0)")),
+		mcp.WithNumber("y", mcp.Description("Container Y position in pixels (default 0)")),
+		mcp.WithNumber("width", mcp.Description("Optional fixed container width. Omit to hug text plus padding.")),
+		mcp.WithNumber("height", mcp.Description("Optional fixed container height. Omit to hug text plus padding.")),
+		mcp.WithString("name", mcp.Description("Container frame name")),
+		mcp.WithString("textName", mcp.Description("Child text node name")),
+		mcp.WithString("fillColor", mcp.Description("Container fill color as hex e.g. #111111")),
+		mcp.WithString("textFillColor", mcp.Description("Text fill color as hex e.g. #FFFFFF")),
+		mcp.WithNumber("cornerRadius", mcp.Description("Container corner radius in pixels")),
+		mcp.WithNumber("paddingTop", mcp.Description("Top padding (default 8)")),
+		mcp.WithNumber("paddingRight", mcp.Description("Right padding (default 12)")),
+		mcp.WithNumber("paddingBottom", mcp.Description("Bottom padding (default 8)")),
+		mcp.WithNumber("paddingLeft", mcp.Description("Left padding (default 12)")),
+		mcp.WithNumber("fontSize", mcp.Description("Text font size in pixels (default 14)")),
+		mcp.WithString("fontFamily", mcp.Description("Text font family e.g. Inter (default Inter)")),
+		mcp.WithString("fontStyle", mcp.Description("Text font style e.g. Regular, Bold, Medium, SemiBold (default Regular)")),
+		mcp.WithString("parentId", mcp.Description("Parent node ID in colon format. Defaults to current page.")),
+	), func(ctx context.Context, req mcp.CallToolRequest) (*mcp.CallToolResult, error) {
+		params := req.GetArguments()
+		resp, err := node.Send(ctx, "create_text_container", nil, params)
+		return renderResponse(resp, err)
+	})
+
 	s.AddTool(mcp.NewTool("create_rectangle",
 		mcp.WithDescription("Create a new rectangle on the current page or inside a parent node."),
 		mcp.WithNumber("x", mcp.Description("X position (default 0)")),

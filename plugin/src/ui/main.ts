@@ -9,10 +9,11 @@
 //      "AI is working…" banner) and a settings panel for host/port.
 //
 // Bumped on every plugin behaviour change the server can branch on.
-const PLUGIN_VERSION = "1.2.0";
+const PLUGIN_VERSION = "1.2.1";
 const PLUGIN_CAPABILITIES = [
   "image_cache_v1",
   "import_images_batch",
+  "text_container_v1",
   "export_nodes_batch",
   "binary_frames_v1",
   "chunking_v1",

@@ -10,10 +10,12 @@ Figma MCP — Free, No Rate Limits [![vkhanhqui/figma-mcp-go server](https://gla
 
 Open-source Figma MCP server with full read/write access via plugin — no REST API, no rate limits. Turn text into designs and designs into real code. Works with Cursor, Claude, GitHub Copilot, and any MCP-compatible AI tool.
 
+> Maintained fork note: this branch continues the v2 work from upstream PR #33 and adds `create_text_container` for reliable text-backed UI elements. Use it when buttons, chips, badges, or labels need symmetric padding; do not compose those elements with `create_rectangle` + `create_text` + `group_nodes`.
+
 **Highlights**
 - No Figma API token required
 - No rate limits — free plan friendly
-- **Read and Write** live Figma data via plugin bridge — 73 tools total
+- **Read and Write** live Figma data via plugin bridge — 75 tools total
 - Full design automation — styles, variables, components, prototypes, and content
 - Design strategies included — read_design_strategy, design_strategy, and more prompts built in
 
@@ -107,10 +109,12 @@ codex mcp add figma-mcp-go -- npx -y @vkhanhqui/figma-mcp-go@latest
 | Tool | Description |
 |------|-------------|
 | `create_frame` | Create a frame with optional auto-layout, fill, and parent |
+| `create_text_container` | Create a button, chip, badge, or label as one auto-layout frame with a text child |
 | `create_rectangle` | Create a rectangle with optional fill and corner radius |
 | `create_ellipse` | Create an ellipse or circle |
 | `create_text` | Create a text node (font loaded automatically) |
-| `import_image` | Decode base64 image and place it as a rectangle fill |
+| `import_image` | Import one image from `imageData`, local `imagePath`, or `imageUrl` |
+| `import_images` | Batch import many images from `imageData`, local `imagePath`, or `imageUrl` |
 | `create_component` | Convert an existing FRAME node into a reusable component |
 | `create_section` | Create a Figma Section node to organise frames on a page |
 

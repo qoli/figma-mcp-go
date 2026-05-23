@@ -101,6 +101,63 @@ export const handleWriteCreateRequest = async (request: any) => {
       };
     }
 
+    case "create_text_container": {
+      const p = request.params || {};
+      const parent = await getParentNode(p.parentId);
+      const fontFamily = p.fontFamily || "Inter";
+      const fontStyle = p.fontStyle || "Regular";
+      await figma.loadFontAsync({ family: fontFamily, style: fontStyle });
+
+      const frame = figma.createFrame();
+      frame.resize(p.width || 1, p.height || 1);
+      frame.x = p.x != null ? p.x : 0;
+      frame.y = p.y != null ? p.y : 0;
+      frame.name = p.name || "Text container";
+      if (p.fillColor) frame.fills = [makeSolidPaint(p.fillColor)];
+      if (p.cornerRadius != null) frame.cornerRadius = Number(p.cornerRadius);
+
+      applyAutoLayout(frame, {
+        layoutMode: "HORIZONTAL",
+        paddingTop: p.paddingTop != null ? p.paddingTop : 8,
+        paddingRight: p.paddingRight != null ? p.paddingRight : 12,
+        paddingBottom: p.paddingBottom != null ? p.paddingBottom : 8,
+        paddingLeft: p.paddingLeft != null ? p.paddingLeft : 12,
+        itemSpacing: 0,
+        primaryAxisAlignItems: "CENTER",
+        counterAxisAlignItems: "CENTER",
+        primaryAxisSizingMode: p.width != null ? "FIXED" : "AUTO",
+        counterAxisSizingMode: p.height != null ? "FIXED" : "AUTO",
+        layoutWrap: "NO_WRAP",
+      });
+
+      const textNode = figma.createText();
+      textNode.fontName = { family: fontFamily, style: fontStyle };
+      if (p.fontSize != null) textNode.fontSize = Number(p.fontSize);
+      textNode.characters = p.text || "";
+      if (p.textName) textNode.name = p.textName;
+      if (p.textFillColor) textNode.fills = [makeSolidPaint(p.textFillColor)];
+      if ("textAutoResize" in textNode) {
+        (textNode as any).textAutoResize = "WIDTH_AND_HEIGHT";
+      }
+
+      (parent as any).appendChild(frame);
+      frame.appendChild(textNode);
+      figma.commitUndo();
+      return {
+        type: request.type,
+        requestId: request.requestId,
+        data: {
+          id: frame.id,
+          name: frame.name,
+          type: frame.type,
+          bounds: getBounds(frame),
+          textId: textNode.id,
+          textName: textNode.name,
+          textBounds: getBounds(textNode),
+        },
+      };
+    }
+
     case "create_rectangle": {
       const p = request.params || {};
       const parent = await getParentNode(p.parentId);
